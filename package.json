@@ -1,0 +1,41 @@
+{
+	"name": "glitch-static-build-cache",
+	"version": "1.0.0",
+	"description": "{DESCRIPTION}",
+	"main": "dist/index.js",
+	"files": [
+		"dist/"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/joshuatz/{REPO}.git"
+	},
+	"bugs": {
+		"url": "https://github.com/joshuatz/{REPO}/issues"
+	},
+	"author": {
+		"name": "Joshua Tzucker",
+		"url": "https://joshuatz.com/?utm_source=package"
+	},
+	"homepage": "https://github.com/joshuatz/{REPO}",
+	"keywords": [
+		"{KEYWORD_A}",
+		"{KEYWORD_B}"
+	],
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc",
+		"build-fast": "node esbuild.run.js",
+		"BROKEN_build": "rollup -c rollup.config.js",
+		"watch": "tsc -w && echo 'DONE!'"
+	},
+	"devDependencies": {
+		"@rollup/plugin-typescript": "^6.1.0",
+		"esbuild": "^0.8.6",
+		"rollup": "^2.33.1",
+		"typescript": "^4.0.5"
+	},
+	"dependencies": {
+		"html2canvas": "^1.0.0-rc.7"
+	}
+}
