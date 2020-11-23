@@ -1,21 +1,30 @@
-#toggleButton {
+
+.toggleButton {
 	font-size: 1.4rem;
 	padding: 5px 10px;
 	background-color: #e7f8d4;
 }
-#toggleButton:hover {
+.toggleButton:hover {
 	box-shadow: -3px 5px rgba(0, 0, 0, 0.1);
 }
-#toggleButton:active {
+.toggleButton:active {
 	box-shadow: none;
 }
 
-#toggleButton[data-running="true"] {
+.toggleButton[data-running="true"], .toggleButton[data-bool^="true"] {
 	background-color: #fabdb9;
 }
 
 [data-running="false"] .running, [data-running="true"] .stopped {
 	display: none;
+}
+[data-bool^="false"] .hideOnFalse, [data-bool^="true"] .hideOnTrue {
+	display: none;
+}
+.controls {
+	width: 100%;
+	text-align: center;
+	margin: 10px 0px;
 }
 
 p.instructions {
@@ -30,6 +39,10 @@ p.instructions {
 	width: 100%;
 	display: flex;
 	justify-content: space-evenly;
+	font-size: 1.4rem;
+	border-bottom: 2px solid black;
+	margin-bottom: 10px;
+	padding: 6px;
 }
 .menuTitle {
 	text-align: center;

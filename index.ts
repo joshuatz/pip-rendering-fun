@@ -5,7 +5,7 @@ interface Settings {
 }
 
 class PipRenderer {
-	private _videoElement: HTMLVideoElement;
+	public videoElement: HTMLVideoElement;
 	public canvasElement: HTMLCanvasElement | null;
 	public pipWindow: PictureInPictureWindow | null;
 	public stream: MediaStream;
@@ -40,7 +40,7 @@ class PipRenderer {
 			videoElement = document.createElement('video');
 			// Helps with auto-play / non-interacted starts
 			videoElement.muted = true;
-			// Seems like it needs to be in DOM to load, but we can hide
+			// Seems like it needs to be in DOM to load, but we can hide (non-FF)
 			if (this._hasGeckoPartialSupport) {
 				videoElement.controls = true;
 				videoElement.autoplay = true;
@@ -54,7 +54,7 @@ class PipRenderer {
 			this.isOpen = false;
 			this._closeListeners.forEach((f) => f());
 		});
-		this._videoElement = videoElement;
+		this.videoElement = videoElement;
 
 		if (settings.startOpen) {
 			this.streamCanvas();
@@ -87,8 +87,8 @@ class PipRenderer {
 	 * Reconnect stream to video PIP
 	 */
 	private reconnect() {
-		this._videoElement.srcObject = this.stream;
-		this._videoElement.play();
+		this.videoElement.srcObject = this.stream;
+		this.videoElement.play();
 		this.isAttached = true;
 	}
 
@@ -118,9 +118,9 @@ class PipRenderer {
 
 	public disconnect() {
 		this.runningTimers.forEach(clearInterval);
-		if (this._videoElement && this.isAttached) {
-			this._videoElement.pause();
-			this._videoElement.srcObject = null;
+		if (this.videoElement && this.isAttached) {
+			this.videoElement.pause();
+			this.videoElement.srcObject = null;
 		}
 		this.isAttached = false;
 	}
@@ -133,11 +133,11 @@ class PipRenderer {
 	public async setPipOpen(setOpen: boolean) {
 		if (setOpen && !document.pictureInPictureElement) {
 			try {
-				this.pipWindow = await this._videoElement.requestPictureInPicture();
+				this.pipWindow = await this.videoElement.requestPictureInPicture();
 				this.isOpen = true;
 			} catch (err) {
 				if (/Metadata for the video element are not loaded yet/i.test(err.toString())) {
-					this._videoElement.addEventListener('loadedmetadata', () => {
+					this.videoElement.addEventListener('loadedmetadata', () => {
 						this.setPipOpen(true);
 					});
 				}
@@ -227,8 +227,8 @@ class PipRenderer {
 				height: this.canvasElement.height
 			}
 		});
-		this._videoElement.width = this.canvasElement.width;
-		this._videoElement.height = this.canvasElement.height;
+		this.videoElement.width = this.canvasElement.width;
+		this.videoElement.height = this.canvasElement.height;
 
 		// Attach canvas to video element
 		this.stream = this.canvasElement.captureStream(25);
@@ -240,8 +240,8 @@ class PipRenderer {
 
 	/**
 	 * Get the canvas as a MediaSource, instead of standard MediaStream
-	 * @param canvas 
-	 * @param minDurationMs 
+	 * @param canvas
+	 * @param minDurationMs
 	 */
 	// public async getCanvasMediaSource(canvas: HTMLCanvasElement, minDurationMs = 0): Promise<MediaSource> {
 	// 	//

@@ -36,11 +36,12 @@ class PipDemoLoader {
 		};
 		const logoOn = await getLogo(true);
 		const logoOff = await getLogo(false);
-		const background = await this.svgStrToImage(`<svg version="1.1" viewBox="0.0 0.0 440.0 50.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><clipPath id="p.0"><path d="m0 0l440.0 0l0 50.0l-440.0 0l0 -50.0z" clip-rule="nonzero"/></clipPath><g clip-path="url(#p.0)"><path fill="#000000" fill-opacity="0.0" d="m0 0l440.0 0l0 50.0l-440.0 0z" fill-rule="evenodd"/><path fill="#2c1338" d="m0 0l440.0 0l0 50.015747l-440.0 0z" fill-rule="evenodd"/><path fill="#422a4c" d="m43.656166 13.084108l0 0c0 -3.2905807 2.6675453 -5.958124 5.958126 -5.958124l260.93414 0c1.5802002 0 3.0956726 0.6277294 4.213043 1.7450943c1.1173706 1.1173649 1.7450867 2.6328373 1.7450867 4.21303l0 23.831781c0 3.2905846 -2.6675415 5.958126 -5.95813 5.958126l-260.93414 0c-3.2905807 0 -5.958126 -2.6675415 -5.958126 -5.958126z" fill-rule="evenodd"/><path fill="#fce5d8" d="m327.5013 13.997485l0 0c0 -3.038351 2.4630737 -5.501422 5.5014343 -5.501422l91.98926 0c1.4590759 0 2.8583984 0.5796118 3.8901062 1.6113291c1.0317078 1.0317163 1.6113281 2.4310255 1.6113281 3.8900928l0 22.005028c0 3.038353 -2.4630737 5.501423 -5.5014343 5.501423l-91.98926 0c-3.0383606 0 -5.5014343 -2.46307 -5.5014343 -5.501423z" fill-rule="evenodd"/></g></svg>`);
+		const background = await this.svgStrToImage(`<svg version="1.1" width="440" height="80" viewBox="0.0 0.0 440.0 80.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><clipPath id="p.0"><path d="m0 0l440.0 0l0 80.0l-440.0 0l0 -80.0z" clip-rule="nonzero"/></clipPath><g clip-path="url(#p.0)"><path fill="#000000" fill-opacity="0.0" d="m0 0l440.0 0l0 80.0l-440.0 0z" fill-rule="evenodd"/><path fill="#2c1338" d="m0 0l440.0 0l0 80.031494l-440.0 0z" fill-rule="evenodd"/><path fill="#422a4c" d="m59.792652 20.934574l0 0c0 -5.2649307 4.26807 -9.532999 9.533001 -9.532999l237.62692 0c2.5282898 0 4.953064 1.0043659 6.7408447 2.7921505c1.7877808 1.7877846 2.7921448 4.2125397 2.7921448 6.7408485l0 38.13085c0 5.264927 -4.2680664 9.533001 -9.5329895 9.533001l-237.62692 0c-5.2649307 0 -9.533001 -4.268074 -9.533001 -9.533001z" fill-rule="evenodd"/><path fill="#fce5d8" d="m327.5013 22.397026l0 0c0 -4.8619423 3.9413757 -8.803326 8.803314 -8.803326l85.3855 0c2.3347778 0 4.573944 0.9274912 6.224884 2.578434c1.65094 1.6509438 2.5784302 3.8901043 2.5784302 6.2248917l0 35.212246c0 4.8619423 -3.9413757 8.803326 -8.803314 8.803326l-85.3855 0c-4.8619385 0 -8.803314 -3.9413834 -8.803314 -8.803326z" fill-rule="evenodd"/></g></svg>`);
 		// Create canvas with exact size
 		canvas = canvas || document.createElement('canvas');
+		canvas.style.display = 'block';
 		canvas.width = 440;
-		canvas.height = 50;
+		canvas.height = 80;
 		const ctx = canvas.getContext('2d');
 		// @ts-ignore
 		window.ctx = ctx;
@@ -81,14 +82,14 @@ class PipDemoLoader {
 			ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 			// Entry Title
 			ctx.fillStyle = 'white';
-			ctx.font = 'normal 22px sans-serif';
-			ctx.fillText(timerInfo.entryDescription, 68, 32);
+			ctx.font = 'normal 21px sans-serif';
+			ctx.fillText(timerInfo.entryDescription, 68, 48);
 			// Entry time
 			ctx.fillStyle = 'black';
-			ctx.fillText(timerInfo.timeFormatted, 342, 33);
+			ctx.fillText(timerInfo.timeFormatted, 346, 46);
 			// Logo
 			if (timerInfo.isRunning) {
-				ctx.drawImage(logoOn, 4, 6, 36, 36);
+				ctx.drawImage(logoOn, 12, 20, 36, 36);
 			} else {
 				ctx.drawImage(logoOff, 4, 6, 36, 36);
 			}
@@ -98,9 +99,6 @@ class PipDemoLoader {
 		renderFrame();
 
 		this.renderer.streamCanvas(canvas);
-		document.addEventListener('click', () => {
-			this.renderer.setPipOpen(true);
-		});
 		return {
 			exitDemo() {
 				clearInterval(timer);

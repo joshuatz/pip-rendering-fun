@@ -7,7 +7,7 @@ declare global {
 		demoState: {
 			isOpen: boolean;
 			renderer: PipRenderer;
-			toggleButton?: HTMLButtonElement;
+			pipToggleButton?: HTMLButtonElement;
 			onOpen: () => void;
 			onClose: () => void;
 		},

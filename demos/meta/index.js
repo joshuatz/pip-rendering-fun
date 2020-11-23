@@ -4,10 +4,12 @@
 		dimensions: {
 			width: 0,
 			height: 0
-		}
+		},
+		isOpen: false
 	}
 	const canvas = document.createElement('canvas');
 	const sqLen = 260;
+	canvas.style.backgroundColor = 'black';
 	canvas.width = sqLen;
 	canvas.height = sqLen;
 	const ctx = canvas.getContext('2d');
