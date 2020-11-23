@@ -15,6 +15,10 @@ interface Document {
 	 * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/exitPictureInPicture
 	 */
 	exitPictureInPicture(): Promise<void>;
+	/**
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/pictureInPictureEnabled
+	 */
+	pictureInPictureEnabled?: boolean;
 }
 
 interface HTMLCanvasElement {

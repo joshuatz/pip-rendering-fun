@@ -1,0 +1,37 @@
+#toggleButton {
+	font-size: 1.4rem;
+	padding: 5px 10px;
+	background-color: #e7f8d4;
+}
+#toggleButton:hover {
+	box-shadow: -3px 5px rgba(0, 0, 0, 0.1);
+}
+#toggleButton:active {
+	box-shadow: none;
+}
+
+#toggleButton[data-running="true"] {
+	background-color: #fabdb9;
+}
+
+[data-running="false"] .running, [data-running="true"] .stopped {
+	display: none;
+}
+
+p.instructions {
+	padding: 10px;
+	margin: 10px;
+	background-color: rgba(3, 169, 244, 0.21);
+	border: 1px solid rgb(0 0 0 / 0.2);
+	border-radius: 4px;
+}
+
+.menuBar {
+	width: 100%;
+	display: flex;
+	justify-content: space-evenly;
+}
+.menuTitle {
+	text-align: center;
+	/* flex-grow: 1; */
+}

@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"checkJs": true,
+		"module": "system",
+		"noEmit": true,
+		"isolatedModules": true,
+		"target": "ES2015"
+	}
+}

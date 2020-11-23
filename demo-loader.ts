@@ -2,8 +2,8 @@
 
 class PipDemoLoader {
 	renderer: PipRenderer;
-	constructor() {
-		this.renderer = new PipRenderer({
+	constructor(renderer?: PipRenderer) {
+		this.renderer = renderer || new PipRenderer({
 			startOpen: false
 		});
 	}
@@ -26,6 +26,8 @@ class PipDemoLoader {
 		return img;
 	}
 
+	public static b64toBlob = (base64Str: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64Str}`).then((res) => res.blob());
+
 	public async loadToggl(canvas?: HTMLCanvasElement) {
 		const RENDER_MS = 400;
 		const getLogo = (isRunning: boolean) => {
@@ -43,8 +45,15 @@ class PipDemoLoader {
 		// @ts-ignore
 		window.ctx = ctx;
 
+		interface TimerInfo {
+			isRunning: boolean;
+			entryDescription: string;
+			projectDescription?: string;
+			timeFormatted: string;
+		}
+
 		const getTimerInfo = () => {
-			const info = {
+			const info: TimerInfo = {
 				isRunning: false,
 				entryDescription: '{Inactive}',
 				projectDescription: '',
@@ -64,10 +73,12 @@ class PipDemoLoader {
 			return info;
 		};
 
-		const renderFrame = async () => {
-			const timerInfo = getTimerInfo();
+		const renderFrame = async (info?: TimerInfo) => {
+			const timerInfo = info || getTimerInfo();
 			this.clearCanvas(canvas);
-			ctx.drawImage(background, 0, 0, 440, 50);
+			ctx.fillStyle = 'white';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 			// Entry Title
 			ctx.fillStyle = 'white';
 			ctx.font = 'normal 22px sans-serif';
@@ -81,15 +92,30 @@ class PipDemoLoader {
 			} else {
 				ctx.drawImage(logoOff, 4, 6, 36, 36);
 			}
-			this.renderer.streamCanvas(canvas);
 		};
-		const timer = setInterval(renderFrame, RENDER_MS);
+
+		let timer = setInterval(renderFrame, RENDER_MS);
 		renderFrame();
+
 		this.renderer.streamCanvas(canvas);
-		this.renderer.setPipOpen(true);
+		document.addEventListener('click', () => {
+			this.renderer.setPipOpen(true);
+		});
 		return {
 			exitDemo() {
 				clearInterval(timer);
+			},
+			/**
+			 * You can override the info source for the running timer, for example to mock
+			 * @param infoFunc Func that will be called to get timer info for new frame
+			 * @param intervalMs Time between updates
+			 */
+			overrideInfoSource(infoFunc: () => TimerInfo, intervalMs = 50) {
+				clearInterval(timer);
+				timer = setInterval(() => {
+					const info = infoFunc();
+					renderFrame(info);
+				}, intervalMs);
 			}
 		};
 	}

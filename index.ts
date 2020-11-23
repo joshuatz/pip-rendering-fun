@@ -13,8 +13,24 @@ class PipRenderer {
 	public isOpen = false;
 	private runningTimers: number[] = [];
 	private _closeListeners: Array<() => void> = [];
+	/**
+	 * Firefox does not support the JS web API / interface,
+	 * but does have partial support, via their own injected controls
+	 * @see https://support.mozilla.org/en-US/kb/about-picture-picture-firefox
+	 * @see https://github.com/mozilla/gecko-dev/tree/c37038c592a352eda0f5e77dfb58c4929bf8bcd3/testing/web-platform/meta/picture-in-picture
+	 */
+	private _hasGeckoPartialSupport = false;
 
 	constructor(settings: Settings) {
+		if (!document.pictureInPictureEnabled) {
+			const ffVerMatches = /Firefox\/(\d{2}\.\d+)$/.exec(navigator.userAgent);
+			if (ffVerMatches && ffVerMatches[1] && parseFloat(ffVerMatches[1]) >= 81) {
+				this._hasGeckoPartialSupport = true;
+				console.warn('You are using a version of Firefox that supports PiP, but it has to be manually launched.');
+			} else {
+				throw new Error('Browser does not support PiP');
+			}
+		}
 		let { videoElement, canvasElement } = settings;
 		if (!canvasElement) {
 			this.getCanvas();
@@ -25,7 +41,12 @@ class PipRenderer {
 			// Helps with auto-play / non-interacted starts
 			videoElement.muted = true;
 			// Seems like it needs to be in DOM to load, but we can hide
-			videoElement.style.display = 'none';
+			if (this._hasGeckoPartialSupport) {
+				videoElement.controls = true;
+				videoElement.autoplay = true;
+			} else {
+				videoElement.style.display = 'none';
+			}
 			document.body.appendChild(videoElement);
 		}
 		videoElement.addEventListener('leavepictureinpicture', () => {
@@ -82,7 +103,17 @@ class PipRenderer {
 			this.canvasElement.height = 270;
 		}
 
-		return this.canvasElement;
+		return {
+			canvas: this.canvasElement,
+			ctx: this.canvasElement.getContext('2d')
+		};
+	}
+
+	public clearCanvas(canvas?: HTMLCanvasElement) {
+		canvas = canvas || this.getCanvas().canvas;
+		const ctx = canvas.getContext('2d');
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		return canvas;
 	}
 
 	public disconnect() {
@@ -166,6 +197,7 @@ class PipRenderer {
 		}
 
 		this.setCanvasDimensions(imageElem);
+		this.clearCanvas();
 		this.canvasElement.getContext('2d').drawImage(imageElem, 0, 0, imageElem.width, imageElem.height);
 		this.streamCanvas();
 	}
@@ -205,4 +237,13 @@ class PipRenderer {
 		// In case the canvas is not touched, we need to send the first frame
 		this.forcePaint();
 	}
+
+	/**
+	 * Get the canvas as a MediaSource, instead of standard MediaStream
+	 * @param canvas 
+	 * @param minDurationMs 
+	 */
+	// public async getCanvasMediaSource(canvas: HTMLCanvasElement, minDurationMs = 0): Promise<MediaSource> {
+	// 	//
+	// }
 }
