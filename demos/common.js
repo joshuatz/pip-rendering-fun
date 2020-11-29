@@ -3,6 +3,11 @@
  */
 const commonSetup = async () => {
 	/**
+	 * Delay to let per-demo code run and DOM init
+	 * @type {number}
+	 */
+	const LOAD_DELAY_MS = 200;
+	/**
 	 * https://docs.joshuatz.com/snippets/js/
 	 * @param {number} e
 	 */
@@ -107,7 +112,7 @@ const commonSetup = async () => {
 			canvasIsInDom = !!renderer.canvasElement.parentElement;
 			localState.canvasVisible = canvasIsInDom && getComputedStyle(renderer.canvasElement).display !== 'none';
 			handleCanvasVisibleChange();
-		}, 100);
+		}, LOAD_DELAY_MS);
 	}
 	const handleCanvasVisibleChange = () => {
 		let canvasIsInDom = !!renderer.canvasElement.parentElement;
@@ -124,16 +129,20 @@ const commonSetup = async () => {
 	 */
 	const showVidButton = document.querySelector('#showVideo');
 	localState.vidVisible = getComputedStyle(renderer.videoElement).display !== 'none';
+	const handleVidVisibleChange = () => {
+		showVidButton.setAttribute('data-bool', localState.vidVisible.toString());
+		renderer.videoElement.style.display = localState.vidVisible ? 'block' : 'none';
+	};
 	if (showVidButton) {
 		showVidButton.addEventListener('click', () => {
 			localState.vidVisible = !localState.vidVisible;
 			handleVidVisibleChange();
 		});
+		setTimeout(() => {
+			localState.vidVisible = getComputedStyle(renderer.videoElement).display !== 'none';
+			handleVidVisibleChange();
+		}, LOAD_DELAY_MS);
 	}
-	const handleVidVisibleChange = () => {
-		showVidButton.setAttribute('data-bool', localState.vidVisible.toString());
-		renderer.videoElement.style.display = localState.vidVisible ? 'block' : 'none';
-	};
 };
 
 /**

@@ -48,3 +48,7 @@ p.instructions {
 	text-align: center;
 	/* flex-grow: 1; */
 }
+
+canvas {
+	border: 2px dashed black;
+}

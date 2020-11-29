@@ -38,11 +38,11 @@ class PipRenderer {
 
 		if (!videoElement) {
 			videoElement = document.createElement('video');
+			videoElement.controls = true;
 			// Helps with auto-play / non-interacted starts
 			videoElement.muted = true;
 			// Seems like it needs to be in DOM to load, but we can hide (non-FF)
 			if (this._hasGeckoPartialSupport) {
-				videoElement.controls = true;
 				videoElement.autoplay = true;
 			} else {
 				videoElement.style.display = 'none';

@@ -3,9 +3,11 @@
 class PipDemoLoader {
 	renderer: PipRenderer;
 	constructor(renderer?: PipRenderer) {
-		this.renderer = renderer || new PipRenderer({
-			startOpen: false
-		});
+		this.renderer =
+			renderer ||
+			new PipRenderer({
+				startOpen: false
+			});
 	}
 
 	private clearCanvas(canvas: HTMLCanvasElement) {
@@ -24,6 +26,22 @@ class PipDemoLoader {
 		img.style.display = 'none';
 		await promise;
 		return img;
+	}
+
+	private getRandomInt(min: number, max: number) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	private loadImg(img: HTMLImageElement) {
+		return new Promise((resolve) => {
+			if (img.complete) {
+				resolve();
+			} else {
+				img.addEventListener('load', resolve);
+			}
+		});
 	}
 
 	public static b64toBlob = (base64Str: string, type = 'application/octet-stream') => fetch(`data:${type};base64,${base64Str}`).then((res) => res.blob());
@@ -45,6 +63,8 @@ class PipDemoLoader {
 		const ctx = canvas.getContext('2d');
 		// @ts-ignore
 		window.ctx = ctx;
+
+		this.renderer.streamCanvas(canvas);
 
 		interface TimerInfo {
 			isRunning: boolean;
@@ -98,7 +118,6 @@ class PipDemoLoader {
 		let timer = setInterval(renderFrame, RENDER_MS);
 		renderFrame();
 
-		this.renderer.streamCanvas(canvas);
 		return {
 			exitDemo() {
 				clearInterval(timer);
@@ -114,6 +133,143 @@ class PipDemoLoader {
 					const info = infoFunc();
 					renderFrame(info);
 				}, intervalMs);
+			}
+		};
+	}
+
+	public async loadStats(bgImage: HTMLImageElement, graphTile: HTMLImageElement, canvas?: HTMLCanvasElement) {
+		const RENDER_MS = Math.floor(1000 / 20);
+		await this.loadImg(bgImage);
+		await this.loadImg(graphTile);
+
+		// Some local state
+		const maxVisitors = 20;
+		const pulseAnimationMs = 1000;
+		const pulseCyclePeak = Math.floor(1.4 * (pulseAnimationMs / RENDER_MS));
+		let currPulseCycle = 0;
+		let pulseCycleDirection: 'up' | 'down' = 'up';
+		const stats = {
+			realTimeVisitors: this.getRandomInt(0, maxVisitors)
+		};
+		const graphTileInfo = {
+			splitXLoc: 0,
+			tileWidth: 538,
+			tileHeight: 197,
+			fillWidth: 140,
+			fillHeight: 60,
+			fillDx: 104,
+			fillDy: 8
+		};
+
+		// Create canvas with exact size
+		canvas = canvas || document.createElement('canvas');
+		canvas.style.display = 'block';
+		canvas.width = 440;
+		canvas.height = 80;
+		const ctx = canvas.getContext('2d');
+		// @ts-ignore
+		window.ctx = ctx;
+
+		this.renderer.streamCanvas(canvas);
+
+		const easeInOut = (x: number) => {
+			return -(Math.cos(Math.PI * x) - 1) / 2;
+		};
+
+		const renderFrame = async () => {
+			// Draw background
+			this.clearCanvas(canvas);
+			ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+			if (currPulseCycle === pulseCyclePeak) {
+				pulseCycleDirection = 'down';
+			} else if (currPulseCycle === 0) {
+				pulseCycleDirection = 'up';
+			}
+			currPulseCycle = pulseCycleDirection === 'up' ? ++currPulseCycle : --currPulseCycle;
+
+			// Draw pulsing "real-time" indicator dot
+			const radius = 8;
+			const blurPxMax = Math.floor(radius * 0.4);
+			ctx.fillStyle = 'white';
+			ctx.beginPath();
+			ctx.ellipse(417, 60, radius, radius, 0, 0, 2 * Math.PI);
+			ctx.fill();
+			const alpha = easeInOut(currPulseCycle / pulseCyclePeak);
+			const blurPx = parseFloat((alpha * blurPxMax).toFixed(2));
+			ctx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(2)})`;
+			ctx.ellipse(417, 60, radius + blurPx, radius + blurPx, 0, 0, 2 * Math.PI);
+			ctx.fill();
+
+			// Add real-time visitor count
+			ctx.fillStyle = 'white';
+			ctx.font = 'normal 21px arial';
+			ctx.fillText(`Visitors: ${stats.realTimeVisitors}`, 286, 60);
+
+			// Add moving graph
+			// Graph is repeatable on x-axis
+			const scrollDirection: 'ltr' | 'rtl' = 'rtl';
+			const xLoc = graphTileInfo.splitXLoc;
+			const { fillWidth, tileHeight, tileWidth, fillDx, fillDy } = graphTileInfo;
+			// @ts-ignore
+			if (scrollDirection === 'ltr') {
+				graphTileInfo.splitXLoc = xLoc === fillWidth ? 0 : xLoc + 1;
+			} else {
+				graphTileInfo.splitXLoc = xLoc === 0 ? fillWidth : xLoc - 1;
+			}
+			const y = 0 + fillDy;
+			const h = graphTileInfo.fillHeight;
+			const dxAlpha = 0 + fillDx;
+			// Clip width,
+			const sWidthAlpha = Math.round((tileWidth * xLoc) / fillWidth);
+			// Clip from right side
+			const sxAlpha = tileWidth - sWidthAlpha;
+			const dWidthAlpha = xLoc;
+			ctx.drawImage(graphTile, sxAlpha, y, sWidthAlpha, tileHeight, dxAlpha, y, dWidthAlpha, h);
+			if (xLoc < fillWidth) {
+				const sxBeta = 0;
+				const sWidthBeta = Math.round((tileWidth * (fillWidth - xLoc)) / fillWidth);
+				const dxBeta = xLoc + fillDx;
+				const dWidthBeta = fillWidth - xLoc;
+				ctx.drawImage(graphTile, sxBeta, y, sWidthBeta, tileHeight, dxBeta, y, dWidthBeta, h);
+				console.log({
+					xLoc,
+					alpha: {
+						sx: sxAlpha,
+						sy: y,
+						sWidth: sWidthAlpha,
+						sHeight: tileHeight,
+						dx: dxAlpha,
+						dy: y,
+						dWidth: dWidthAlpha,
+						dHeight: h
+					},
+					beta: {
+						sx: sxBeta,
+						sy: y,
+						sWidth: sWidthBeta,
+						sHeight: tileHeight,
+						dx: dxBeta,
+						dy: y,
+						dWidth: dWidthBeta,
+						dHeight: h
+					}
+				});
+			}
+		};
+
+		const updateStats = async () => {
+			stats.realTimeVisitors = this.getRandomInt(0, maxVisitors);
+		};
+
+		let statsTimer = setInterval(updateStats, 2000);
+		let renderTimer = setInterval(renderFrame, RENDER_MS);
+		updateStats();
+		renderFrame();
+
+		return {
+			exitDemo() {
+				clearInterval(statsTimer);
+				clearInterval(renderTimer);
 			}
 		};
 	}
