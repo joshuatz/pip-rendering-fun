@@ -156,19 +156,17 @@ class PipDemoLoader {
 			tileWidth: 538,
 			tileHeight: 197,
 			fillWidth: 140,
-			fillHeight: 60,
-			fillDx: 104,
-			fillDy: 8
+			fillHeight: 108,
+			fillDx: 105,
+			fillDy: 56
 		};
 
 		// Create canvas with exact size
 		canvas = canvas || document.createElement('canvas');
 		canvas.style.display = 'block';
 		canvas.width = 440;
-		canvas.height = 80;
+		canvas.height = 146;
 		const ctx = canvas.getContext('2d');
-		// @ts-ignore
-		window.ctx = ctx;
 
 		this.renderer.streamCanvas(canvas);
 
@@ -192,18 +190,20 @@ class PipDemoLoader {
 			const blurPxMax = Math.floor(radius * 0.4);
 			ctx.fillStyle = 'white';
 			ctx.beginPath();
-			ctx.ellipse(417, 60, radius, radius, 0, 0, 2 * Math.PI);
+			const dotDx = 417;
+			const dotDy = 120;
+			ctx.ellipse(dotDx, dotDy, radius, radius, 0, 0, 2 * Math.PI);
 			ctx.fill();
 			const alpha = easeInOut(currPulseCycle / pulseCyclePeak);
 			const blurPx = parseFloat((alpha * blurPxMax).toFixed(2));
 			ctx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(2)})`;
-			ctx.ellipse(417, 60, radius + blurPx, radius + blurPx, 0, 0, 2 * Math.PI);
+			ctx.ellipse(dotDx, dotDy, radius + blurPx, radius + blurPx, 0, 0, 2 * Math.PI);
 			ctx.fill();
 
 			// Add real-time visitor count
 			ctx.fillStyle = 'white';
 			ctx.font = 'normal 21px arial';
-			ctx.fillText(`Visitors: ${stats.realTimeVisitors}`, 286, 60);
+			ctx.fillText(`Visitors: ${stats.realTimeVisitors}`, 296, 100);
 
 			// Add moving graph
 			// Graph is repeatable on x-axis
@@ -231,29 +231,6 @@ class PipDemoLoader {
 				const dxBeta = xLoc + fillDx;
 				const dWidthBeta = fillWidth - xLoc;
 				ctx.drawImage(graphTile, sxBeta, y, sWidthBeta, tileHeight, dxBeta, y, dWidthBeta, h);
-				console.log({
-					xLoc,
-					alpha: {
-						sx: sxAlpha,
-						sy: y,
-						sWidth: sWidthAlpha,
-						sHeight: tileHeight,
-						dx: dxAlpha,
-						dy: y,
-						dWidth: dWidthAlpha,
-						dHeight: h
-					},
-					beta: {
-						sx: sxBeta,
-						sy: y,
-						sWidth: sWidthBeta,
-						sHeight: tileHeight,
-						dx: dxBeta,
-						dy: y,
-						dWidth: dWidthBeta,
-						dHeight: h
-					}
-				});
 			}
 		};
 
