@@ -175,6 +175,9 @@ const injectUi = (renderer) => {
 	const pipDisclaimer = `
 <p>${renderer.hasGeckoPartialSupport ? 'Your browser does not support the PiP API, but you should be able to right click the video on this page and manually open and close a PiP window.' : 'Your browser does not support PiP, in any capacity :('}</p>
 `;
+	const disclaimerHtml = renderer.isFirefox ? `<div style="width: 100%; text-align:center;">${pipDisclaimer}</div>` : '';
+
+	// Build controls bar
 	const controls = `
 ${!renderer.isFirefox ? showPipButton : ''}
 <button id="showCanvas" title="Toggle <canvas> element display" class="toggleButton" data-bool="false">
@@ -185,10 +188,10 @@ ${!renderer.isFirefox ? showPipButton : ''}
 	<span class="hideOnTrue"><span aria-hidden="true">📺</span> Show Video Element</span>
 	<span class="hideOnFalse"><span aria-hidden="true">🙈</span> Hide Video Element</span>
 </button>
-${renderer.isFirefox ? pipDisclaimer : ''}
 `;
 	document.querySelector('.menuBar').outerHTML = menuBar;
 	document.querySelectorAll('.controls.template').forEach((d) => (d.innerHTML = controls));
+	document.querySelector('.controls').insertAdjacentHTML('afterend', disclaimerHtml);
 };
 
 // Run everything
