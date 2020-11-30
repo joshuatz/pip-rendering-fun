@@ -28,11 +28,12 @@
 		"build-demos": "marked -i ./demos/index.md -o ./demos/index.html",
 		"build": "tsc",
 		"build-fast": "node esbuild.run.js",
+		"deploy-build": "yarn build && yarn build-demos",
 		"watch": "tsc -w"
 	},
 	"devDependencies": {
 		"@rollup/plugin-typescript": "^6.1.0",
-		"esbuild": "^0.8.6",
+		"esbuild": "^0.8.17",
 		"marked": "^1.2.5",
 		"prettier": "2.2.1",
 		"typescript": "^4.0.5"

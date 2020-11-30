@@ -111,7 +111,7 @@ class PipDemoLoader {
 			if (timerInfo.isRunning) {
 				ctx.drawImage(logoOn, 12, 20, 36, 36);
 			} else {
-				ctx.drawImage(logoOff, 4, 6, 36, 36);
+				ctx.drawImage(logoOff, 12, 20, 36, 36);
 			}
 		};
 

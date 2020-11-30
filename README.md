@@ -2,11 +2,19 @@
 > An experiment in pushing the boundaries with the Browser Picture-In-Picture API; rendering arbitrary content to PiP as a second app window!
 
 ## Live Demos
-To try all the demos, head to [REPLACE_ME](REPLACE_ME).
+To try all the demos, head to [pip-rendering-fun.netlify.app](https://pip-rendering-fun.netlify.app).
 
 Here is a sample of what one of them ("Stats") looks like:
 
-![Stats demo GIF](REPLACE_ME)
+![Stats demo GIF](./stats-demo.gif)
+
+And here is a demo that is running on a real website - showing how PiP could be used as a way to keep on eye on time tracking:
+
+<details>
+	<summary>Time Tracker Demo</summary>
+
+![Toggl Time Tracker Demo](./timer-demo.gif)
+</details>
 
 ## Intro
 For those not familiar, [the `Picture-in-Picture` API](https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API) (aka *PiP*) is an experimental web API that allows for websites to "pop" a video player on the page out, and have it continue playing as a floating window that will *always* stay on top of all other windows.
