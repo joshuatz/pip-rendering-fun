@@ -1,5 +1,21 @@
+<!-- omit in toc -->
 # Pip-Rendering-Fun
+[![Netlify Status](https://api.netlify.com/api/v1/badges/28a1fd7f-0b6c-4321-8cdc-adbab36c48fa/deploy-status)](https://app.netlify.com/sites/pip-rendering-fun/deploys)
 > An experiment in pushing the boundaries with the Browser Picture-In-Picture API; rendering arbitrary content to PiP as a second app window!
+
+<details>
+	<summary>Table of Contents</summary>
+
+- [Live Demos](#live-demos)
+- [Intro](#intro)
+- [Why](#why)
+- [How This Works](#how-this-works)
+	- [Quirks and Caveats](#quirks-and-caveats)
+- [Excited for the Future!](#excited-for-the-future)
+	- [*"Picture-in-Picture for arbitrary content"*](#picture-in-picture-for-arbitrary-content)
+	- [Multi-Screen Window Placement](#multi-screen-window-placement)
+- [Wrap-Up](#wrap-up)
+</details>
 
 ## Live Demos
 To try all the demos, head to [pip-rendering-fun.netlify.app](https://pip-rendering-fun.netlify.app).
@@ -94,3 +110,14 @@ I think the ideal solution might be one that combines the two ideas; if perhaps 
 	- [Window-Placement Repo](https://github.com/webscreens/window-placement)
 	- [Specification](https://webscreens.github.io/window-placement/) (draft)
 </details>
+
+## Wrap-Up
+Honestly, I hope that in the near future this whole repo becomes pointless due to browsers implementing improvements around floating window controls (as discussed above). It is exciting to think of a future where more applications can be run directly in the browser, no installation necessary, and this would be a step towards that goal.
+
+<!-- omit in toc -->
+## About Me:
+
+ - 🔗<a href="https://joshuatz.com/" rel="noopener" target="_blank">joshuatz.com</a>
+ - 👨‍💻<a href="https://dev.to/joshuatz" rel="noopener" target="_blank">dev.to/joshuatz</a>
+ - 💬<a href="https://twitter.com/1joshuatz" rel="noopener" target="_blank">@1joshuatz</a>
+ - 💾<a href="https://github.com/joshuatz" rel="noopener" target="_blank">github.com/joshuatz</a>
