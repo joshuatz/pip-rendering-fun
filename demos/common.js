@@ -53,6 +53,7 @@ const commonSetup = async (renderer) => {
 		renderer,
 		pipToggleButton,
 		onOpen: () => {},
+		handleOpen: null,
 		onClose: () => {}
 	};
 	window.demoUtils = {
@@ -70,9 +71,14 @@ const commonSetup = async (renderer) => {
 		pipToggleButton.setAttribute('data-running', isOpen.toString());
 		const cb = isOpen ? window.demoState.onOpen : window.demoState.onClose;
 		if (renderer.isOpen !== isOpen) {
-			renderer.setPipOpen(isOpen).then(() => {
+			if (window.demoState.handleOpen) {
+				window.demoState.handleOpen();
 				cb();
-			});
+			} else {
+				renderer.setPipOpen(isOpen).then(() => {
+					cb();
+				});
+			}
 		} else {
 			cb();
 		}

@@ -204,12 +204,14 @@ class PipRenderer {
 		this.streamCanvas();
 	}
 
-	public async renderScreenShare() {
+	public async renderScreenShare(screenStream?: MediaStream) {
 		const onDetatched = () => {
 			this.isAttached = false;
 			console.warn('User stopped media / screen share!');
 		};
-		const screenStream = await navigator.mediaDevices.getDisplayMedia();
+		if (!screenStream) {
+			screenStream = await navigator.mediaDevices.getDisplayMedia();
+		}
 		// Add listener
 		screenStream.getVideoTracks()[0].addEventListener('ended', onDetatched);
 		// Pipe
@@ -239,13 +241,4 @@ class PipRenderer {
 		// In case the canvas is not touched, we need to send the first frame
 		this.forcePaint();
 	}
-
-	/**
-	 * Get the canvas as a MediaSource, instead of standard MediaStream
-	 * @param canvas
-	 * @param minDurationMs
-	 */
-	// public async getCanvasMediaSource(canvas: HTMLCanvasElement, minDurationMs = 0): Promise<MediaSource> {
-	// 	//
-	// }
 }

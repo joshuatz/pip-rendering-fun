@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Page Title</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" type="text/css" media="screen" href="../common.css" />
+	</head>
+	<body>
+		<div class="menuBar template"></div>
+		<p class="instructions">You can draw on the canvas below and have it mirrored in real-time to the floating picture-in-picture window!</p>
+		<div class="controls template"></div>
+		<!-- JQuery (needed by DrawingBoard.js) -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+		<!-- DrawingBoard.js: https://github.com/Leimi/drawingboard.js -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/drawingboard.js/0.4.6/drawingboard.min.css" integrity="sha512-UBSlWtShfKs7gVnnuaENb2XosKs7aIcOKVSp444wQiEZS19WNdY6BVGhGQuzs8D6V0sOQ9K3EXQ4/PVX7WsFSA==" crossorigin="anonymous" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/drawingboard.js/0.4.6/drawingboard.min.js" integrity="sha512-nBD3/PMDHBJJwtFI79Ffp5p4XFB8BAX/N8KdvwGm+m1i56JtzPG66yQJwGO9gxEdgOw81ysvtyOGetJcElEhqw==" crossorigin="anonymous"></script>
+
+		<div id="canvasContainer" style="width: 600px; height: 400px"></div>
+		<script src="../dist/index.js"></script>
+		<script src="../dist/demo-loader.js"></script>
+		<script src="../common.js"></script>
+		<script src="./index.js"></script>
+		<style>
+			button#showCanvas {
+				display: none;
+			}
+		</style>
+	</body>
+</html>
