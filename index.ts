@@ -19,13 +19,15 @@ class PipRenderer {
 	 * @see https://support.mozilla.org/en-US/kb/about-picture-picture-firefox
 	 * @see https://github.com/mozilla/gecko-dev/tree/c37038c592a352eda0f5e77dfb58c4929bf8bcd3/testing/web-platform/meta/picture-in-picture
 	 */
-	private _hasGeckoPartialSupport = false;
+	public hasGeckoPartialSupport = false;
+	public isFirefox = false;
 
 	constructor(settings: Settings) {
 		if (!document.pictureInPictureEnabled) {
 			const ffVerMatches = /Firefox\/(\d{2}\.\d+)$/.exec(navigator.userAgent);
+			this.isFirefox = true;
 			if (ffVerMatches && ffVerMatches[1] && parseFloat(ffVerMatches[1]) >= 81) {
-				this._hasGeckoPartialSupport = true;
+				this.hasGeckoPartialSupport = true;
 				console.warn('You are using a version of Firefox that supports PiP, but it has to be manually launched.');
 			} else {
 				throw new Error('Browser does not support PiP');
@@ -42,7 +44,7 @@ class PipRenderer {
 			// Helps with auto-play / non-interacted starts
 			videoElement.muted = true;
 			// Seems like it needs to be in DOM to load, but we can hide (non-FF)
-			if (this._hasGeckoPartialSupport) {
+			if (this.hasGeckoPartialSupport) {
 				videoElement.autoplay = true;
 			} else {
 				videoElement.style.display = 'none';
@@ -221,7 +223,7 @@ class PipRenderer {
 	 */
 	public async streamCanvas(canvas?: HTMLCanvasElement) {
 		this.canvasElement = canvas || this.canvasElement;
-		console.log({
+		console.log(`Starting canvas streaming`, {
 			canvasDimensions: {
 				width: this.canvasElement.width,
 				height: this.canvasElement.height

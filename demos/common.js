@@ -1,7 +1,8 @@
 /**
  * This is code to set up the renderer, handle state change, and listen
+ * @param {PipRenderer} renderer
  */
-const commonSetup = async () => {
+const commonSetup = async (renderer) => {
 	/**
 	 * Delay to let per-demo code run and DOM init
 	 * @type {number}
@@ -43,11 +44,6 @@ const commonSetup = async () => {
 			p.innerText = info;
 		});
 	};
-
-	/**
-	 * Main renderer init
-	 */
-	const renderer = new PipRenderer({ startOpen: false });
 
 	/** @type {HTMLButtonElement | undefined} */
 	// prettier-ignore
@@ -147,8 +143,9 @@ const commonSetup = async () => {
 
 /**
  * This is UI injection code, so I don't have to compile templates
+ * @param {PipRenderer} renderer
  */
-(() => {
+const injectUi = (renderer) => {
 	if (document.title === 'Page Title') {
 		const dirName = document.location.pathname
 			.split('/')
@@ -162,11 +159,17 @@ const commonSetup = async () => {
 	<div class="menuButton"><a href="/">Home 🏠</a></div>
 	<div class="menuTitle">${document.title}</div>
 </div>`;
-	const controls = `
+	const showPipButton = `
 <button id="pipToggleButton" title="Toggle PiP popout!" class="toggleButton" data-running="false">
 	<span class="stopped"><span aria-hidden="true">🛸</span> Open PiP!</span>
 	<span class="running"><span aria-hidden="true">🛑</span> Close PiP!</span>
 </button>
+`;
+	const pipDisclaimer = `
+<p>${renderer.hasGeckoPartialSupport ? 'Your browser does not support the PiP API, but you should be able to right click the video on this page and manually open and close a PiP window.' : 'Your browser does not support PiP, in any capacity :('}</p>
+`;
+	const controls = `
+${!renderer.isFirefox ? showPipButton : ''}
 <button id="showCanvas" title="Toggle <canvas> element display" class="toggleButton" data-bool="false">
 	<span class="hideOnTrue"><span aria-hidden="true">🎨</span> Show Canvas</span>
 	<span class="hideOnFalse"><span aria-hidden="true">🙈</span> Hide Canvas</span>
@@ -175,8 +178,18 @@ const commonSetup = async () => {
 	<span class="hideOnTrue"><span aria-hidden="true">📺</span> Show Video Element</span>
 	<span class="hideOnFalse"><span aria-hidden="true">🙈</span> Hide Video Element</span>
 </button>
+${renderer.isFirefox ? pipDisclaimer : ''}
 `;
 	document.querySelector('.menuBar').outerHTML = menuBar;
 	document.querySelectorAll('.controls.template').forEach((d) => (d.innerHTML = controls));
-	commonSetup();
+};
+
+// Run everything
+(async () => {
+	/**
+	 * Main renderer init
+	 */
+	const renderer = new PipRenderer({ startOpen: false });
+	injectUi(renderer);
+	commonSetup(renderer);
 })();

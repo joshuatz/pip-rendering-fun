@@ -1,39 +1,40 @@
 {
-	"name": "{TBD}",
+	"name": "pip-rendering-fun",
+	"private": "true",
 	"version": "1.0.0",
-	"description": "{DESCRIPTION}",
+	"description": "An experiment in rendering non-video content in PiP windows",
 	"main": "dist/index.js",
 	"files": [
 		"dist/"
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/joshuatz/{REPO}.git"
+		"url": "https://github.com/joshuatz/pip-rendering-fun.git"
 	},
 	"bugs": {
-		"url": "https://github.com/joshuatz/{REPO}/issues"
+		"url": "https://github.com/joshuatz/pip-rendering-fun/issues"
 	},
 	"author": {
 		"name": "Joshua Tzucker",
 		"url": "https://joshuatz.com/?utm_source=package"
 	},
-	"homepage": "https://github.com/joshuatz/{REPO}",
+	"homepage": "https://github.com/joshuatz/pip-rendering-fun",
 	"keywords": [
-		"{KEYWORD_A}",
-		"{KEYWORD_B}"
+		"picture-in-picture",
+		"pip"
 	],
 	"license": "MIT",
 	"scripts": {
+		"build-demos": "marked -i ./demos/index.md -o ./demos/index.html",
 		"build": "tsc",
 		"build-fast": "node esbuild.run.js",
-		"BROKEN_build": "rollup -c rollup.config.js",
-		"watch": "tsc -w && echo 'DONE!'"
+		"watch": "tsc -w"
 	},
 	"devDependencies": {
 		"@rollup/plugin-typescript": "^6.1.0",
 		"esbuild": "^0.8.6",
+		"marked": "^1.2.5",
 		"prettier": "2.2.1",
-		"rollup": "^2.33.1",
 		"typescript": "^4.0.5"
 	},
 	"dependencies": {

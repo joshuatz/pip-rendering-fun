@@ -49,6 +49,6 @@ p.instructions {
 	/* flex-grow: 1; */
 }
 
-canvas {
+canvas, video {
 	border: 2px dashed black;
 }

@@ -224,13 +224,17 @@ class PipDemoLoader {
 			// Clip from right side
 			const sxAlpha = tileWidth - sWidthAlpha;
 			const dWidthAlpha = xLoc;
-			ctx.drawImage(graphTile, sxAlpha, y, sWidthAlpha, tileHeight, dxAlpha, y, dWidthAlpha, h);
+			if (sWidthAlpha) {
+				ctx.drawImage(graphTile, sxAlpha, y, sWidthAlpha, tileHeight, dxAlpha, y, dWidthAlpha, h);
+			}
 			if (xLoc < fillWidth) {
 				const sxBeta = 0;
 				const sWidthBeta = Math.round((tileWidth * (fillWidth - xLoc)) / fillWidth);
 				const dxBeta = xLoc + fillDx;
 				const dWidthBeta = fillWidth - xLoc;
-				ctx.drawImage(graphTile, sxBeta, y, sWidthBeta, tileHeight, dxBeta, y, dWidthBeta, h);
+				if (dWidthBeta) {
+					ctx.drawImage(graphTile, sxBeta, y, sWidthBeta, tileHeight, dxBeta, y, dWidthBeta, h);
+				}
 			}
 		};
 
