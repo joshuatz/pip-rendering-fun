@@ -148,24 +148,10 @@ const commonSetup = async (renderer) => {
 };
 
 /**
- * This is UI injection code, so I don't have to compile templates
+ * Inject UI control buttons
  * @param {PipRenderer} renderer
  */
-const injectUi = (renderer) => {
-	if (document.title === 'Page Title') {
-		const dirName = document.location.pathname
-			.split('/')
-			.filter((f) => !!f)
-			.pop();
-		document.title = `PiP Render Demo | ${dirName}`;
-	}
-	const menuBar = `
-<div class="menuBar">
-	<div class="menuButton"><a href="..">Back 🔙 / 🏠</a></div>
-	<div class="menuButton"><a href="https://github.com/joshuatz/pip-rendering-fun" rel="noopener" target="_blank">Git Repo 👩‍💻</a></div>
-	
-	<div class="menuTitle">${document.title}</div>
-</div>`;
+const injectButtons = (renderer) => {
 	const showPipButton = `
 <button id="pipToggleButton" title="Toggle PiP popout!" class="toggleButton" data-running="false">
 	<span class="stopped"><span aria-hidden="true">🛸</span> Open PiP!</span>
@@ -189,9 +175,26 @@ ${!renderer.isFirefox ? showPipButton : ''}
 	<span class="hideOnFalse"><span aria-hidden="true">🙈</span> Hide Video Element</span>
 </button>
 `;
-	document.querySelector('.menuBar').outerHTML = menuBar;
 	document.querySelectorAll('.controls.template').forEach((d) => (d.innerHTML = controls));
 	document.querySelector('.controls').insertAdjacentHTML('afterend', disclaimerHtml);
+};
+
+const injectMenuBar = () => {
+	if (document.title === 'Page Title') {
+		const dirName = document.location.pathname
+			.split('/')
+			.filter((f) => !!f)
+			.pop();
+		document.title = `PiP Render Demo | ${dirName}`;
+	}
+	const menuBar = `
+<div class="menuBar">
+	<div class="menuButton"><a href="..">Back 🔙 / 🏠</a></div>
+	<div class="menuButton"><a href="https://github.com/joshuatz/pip-rendering-fun" rel="noopener" target="_blank">Git Repo 👩‍💻</a></div>
+	
+	<div class="menuTitle">${document.title}</div>
+</div>`;
+	document.querySelector('.menuBar').outerHTML = menuBar;
 };
 
 // Run everything
@@ -199,7 +202,13 @@ ${!renderer.isFirefox ? showPipButton : ''}
 	/**
 	 * Main renderer init
 	 */
-	const renderer = new PipRenderer({ startOpen: false });
-	injectUi(renderer);
-	commonSetup(renderer);
+	injectMenuBar();
+	try {
+		const renderer = new PipRenderer({ startOpen: false });
+		injectButtons(renderer);
+		commonSetup(renderer);
+	} catch (e) {
+		console.error(`Error in common.js, setting up main Renderer`, e);
+		alert('Something went wrong setting up the demo! Your device might not support PiP.');
+	}
 })();
