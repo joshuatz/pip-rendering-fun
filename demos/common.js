@@ -155,8 +155,9 @@ const injectUi = (renderer) => {
 	}
 	const menuBar = `
 <div class="menuBar">
-	<div class="menuButton"><a href="..">Back 🔙</a></div>
-	<div class="menuButton"><a href="/">Home 🏠</a></div>
+	<div class="menuButton"><a href="..">Back 🔙 / 🏠</a></div>
+	<div class="menuButton"><a href="https://github.com/joshuatz/pip-rendering-fun" rel="noopener" target="_blank">Git Repo 👩‍💻</a></div>
+	
 	<div class="menuTitle">${document.title}</div>
 </div>`;
 	const showPipButton = `

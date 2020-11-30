@@ -3,9 +3,9 @@
 	"private": "true",
 	"version": "1.0.0",
 	"description": "An experiment in rendering non-video content in PiP windows",
-	"main": "dist/index.js",
+	"main": "demos/dist/index.js",
 	"files": [
-		"dist/"
+		"demos/dist/"
 	],
 	"repository": {
 		"type": "git",

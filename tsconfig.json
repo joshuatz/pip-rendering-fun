@@ -3,17 +3,9 @@
 		"lib": ["es5", "es2015.promise", "dom", "es2015"],
 		"checkJs": true,
 		"allowJs": true,
-		"outDir": "./dist",
-		"target": "ES5",
+		"outDir": "./demos/dist",
+		"target": "ES5"
 	},
-	"include": [
-		"index.ts",
-		"demo-loader.ts",
-		"*.d.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"demos"
-	]
+	"include": ["index.ts", "demo-loader.ts", "*.d.ts"],
+	"exclude": ["node_modules", "dist", "demos"]
 }
