@@ -42,7 +42,13 @@ PiP Source Resolution | Minimum PiP Resolution
 
 > Firefox had much more reasonable restrictions, as well as preserving aspect ratio. With a `440x80` input, it let me shrink all the way down to half, at `220x40`
 
-## Firefox / Gecko
+## Individual Platform Support
+For tracking the overall state of PiP browser support across different platforms, two great resources I have found are:
+
+- W3C Repo: [/implementation-status.md](https://github.com/w3c/picture-in-picture/blob/master/implementation-status.md)
+- ottball / Lowette: [What's popping, Picture-in-Picture?](https://ottball.com/whats-popping-picture-in-picture/)
+
+### Firefox / Gecko (Desktop)
 - There are a bunch of things to note / quirks with PiP in Firefox
 	- Shipped in v71+ [ref](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox)
 	- [Default preferences](https://github.com/mozilla/gecko-dev/blob/5a1a34953a26117f3be1a00db20c8bbdc03273d6/modules/libpref/init/all.js#L419-L425) have it as off, and even if you turn it on, the launch button only shows up if video length > 45 seconds
@@ -51,3 +57,13 @@ PiP Source Resolution | Minimum PiP Resolution
 	- ["How we Built Picture-in-Picture in Firefox"](https://hacks.mozilla.org/2020/01/how-we-built-picture-in-picture-in-firefox-desktop/) - Great insight into design process, prior art, etc.
 	- Their [standards position on W3C PiP Web API - #72](https://github.com/mozilla/standards-positions/issues/72)
 	- [`videcontrols.js`](https://github.com/mozilla/gecko-dev/blob/2efcda6dc74c63863fd8f04a6d9d7ac6b09c7eca/toolkit/content/widgets/videocontrols.js)
+
+### Android
+Android has support a "flavor" of Picture-in-Picture [since Android 8.0](https://developer.android.com/guide/topics/ui/picture-in-picture) (aka *Oreo*). However, this is really a separate native API, of which browsers (and apps) can utilize.
+
+***Within*** an actual web browser on Android, the ability to use this API depends on the browser:
+
+- With Chrome, the `.requestPictureInPicture()` API seems to work fine
+- In Android Firefox, similar caveats to those with Desktop Firefox apply:
+	- The JS API is not exposed, and triggering PiP requires that *the user* makes the video full-screen, and then presses the home button.
+	- Furthermore, there appears to be some sort of limitations on what *type* of videos can trigger PiP behavior, and I can't find it documented anywhere. It might be that there is a minimum duration, resolution, and/or aspect ratio requirements. Whatever it is, I have had trouble getting my canvas streams to trigger it.
