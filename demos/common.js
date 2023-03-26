@@ -18,7 +18,7 @@ const commonSetup = async (renderer) => {
 			hrs: Math.floor((e % 864e5) / 36e5),
 			mins: Math.floor(((e % 864e5) % 36e5) / 6e4),
 			secs: Math.floor((((e % 864e5) % 36e5) % 6e4) / 1e3),
-			ms: Math.floor((((e % 864e5) % 36e5) % 6e4) % 1e3)
+			ms: Math.floor((((e % 864e5) % 36e5) % 6e4) % 1e3),
 		};
 	};
 	/**
@@ -45,24 +45,23 @@ const commonSetup = async (renderer) => {
 		});
 	};
 
-	/** @type {HTMLButtonElement | undefined} */
 	// prettier-ignore
-	const pipToggleButton = (document.getElementById('pipToggleButton'));
+	const pipToggleButton = /** @type {HTMLButtonElement | undefined} */ (document.getElementById('pipToggleButton'));
 	window.demoState = {
 		isOpen: false,
 		renderer,
 		pipToggleButton,
 		onOpen: () => {},
 		handleOpen: null,
-		onClose: () => {}
+		onClose: () => {},
 	};
 	window.demoUtils = {
 		msToParts,
-		leftPad
+		leftPad,
 	};
 	const localState = {
 		canvasVisible: false,
-		vidVisible: false
+		vidVisible: false,
 	};
 
 	const handleRunningStateChange = () => {
@@ -158,14 +157,26 @@ const injectButtons = (renderer) => {
 	<span class="running"><span aria-hidden="true">🛑</span> Close PiP!</span>
 </button>
 `;
+	let pipDisclaimerText = 'Your browser does not support PiP, in any capacity :(';
+	if (renderer.hasGeckoPartialSupport && !renderer.isAndroid) {
+		pipDisclaimerText =
+			'Your browser does not support the JS PiP API, but you should be able to right click the video on this page and manually open and close a PiP window.';
+	}
+	if (renderer.hasAndroidOSSupport) {
+		pipDisclaimerText =
+			'Your browser does not support the JS PiP API, but you might be able to get it to work by full-screening the video, and then pressing the home button.';
+	}
 	const pipDisclaimer = `
-<p>${renderer.hasGeckoPartialSupport ? 'Your browser does not support the PiP API, but you should be able to right click the video on this page and manually open and close a PiP window.' : 'Your browser does not support PiP, in any capacity :('}</p>
+<p>${pipDisclaimerText}</p>
 `;
-	const disclaimerHtml = renderer.isFirefox ? `<div style="width: 100%; text-align:center;">${pipDisclaimer}</div>` : '';
+	const disclaimerHtml =
+		!renderer.hasRegularJSAPI || renderer.isFirefox
+			? `<div style="width: 100%; text-align:center;">${pipDisclaimer}</div>`
+			: '';
 
 	// Build controls bar
 	const controls = `
-${!renderer.isFirefox ? showPipButton : ''}
+${renderer.hasRegularJSAPI ? showPipButton : ''}
 <button id="showCanvas" title="Toggle <canvas> element display" class="toggleButton" data-bool="false">
 	<span class="hideOnTrue"><span aria-hidden="true">🎨</span> Show Canvas</span>
 	<span class="hideOnFalse"><span aria-hidden="true">🙈</span> Hide Canvas</span>

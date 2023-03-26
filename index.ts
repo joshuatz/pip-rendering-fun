@@ -13,6 +13,7 @@ class PipRenderer {
 	public isOpen = false;
 	private runningTimers: number[] = [];
 	private _closeListeners: Array<() => void> = [];
+	public hasRegularJSAPI = false;
 	/**
 	 * Firefox does not support the JS web API / interface,
 	 * but does have partial support, via their own injected controls
@@ -21,16 +22,29 @@ class PipRenderer {
 	 */
 	public hasGeckoPartialSupport = false;
 	public isFirefox = false;
+	public isAndroid = false;
+	public hasAndroidOSSupport = false;
 
 	constructor(settings: Settings) {
-		if (!document.pictureInPictureEnabled) {
-			const ffVerMatches = /Firefox\/(\d{2}\.\d+)$/.exec(navigator.userAgent);
-			this.isFirefox = true;
-			if (ffVerMatches && ffVerMatches[1] && parseFloat(ffVerMatches[1]) >= 81) {
+		if (document.pictureInPictureEnabled) {
+			this.hasRegularJSAPI = true;
+		} else {
+			const androidMatches = /Android (\d{1,});/.exec(navigator.userAgent);
+			const ffVerMatches = /Firefox\/(\d{2,}\.\d+)$/.exec(navigator.userAgent);
+			this.isFirefox = ffVerMatches && !!ffVerMatches[1];
+			this.isAndroid = androidMatches && !!androidMatches[1];
+			if (this.isFirefox && parseFloat(ffVerMatches[1]) >= 81) {
 				this.hasGeckoPartialSupport = true;
-				console.warn('You are using a version of Firefox that supports PiP, but it has to be manually launched.');
-			} else {
-				throw new Error('Browser does not support PiP');
+				console.warn(
+					'You are using a version of Firefox that supports PiP, but it has to be manually launched.'
+				);
+			}
+			if (this.isAndroid && parseFloat(androidMatches[1]) >= 8) {
+				this.hasAndroidOSSupport = true;
+			}
+
+			if (!this.hasGeckoPartialSupport && !this.hasAndroidOSSupport && !this.hasRegularJSAPI) {
+				throw new Error(`${navigator.userAgent} bowser does not support PiP`);
 			}
 		}
 		let { videoElement, canvasElement } = settings;
@@ -44,7 +58,7 @@ class PipRenderer {
 			// Helps with auto-play / non-interacted starts
 			videoElement.muted = true;
 			// Seems like it needs to be in DOM to load, but we can hide (non-FF)
-			if (this.hasGeckoPartialSupport) {
+			if (!this.hasRegularJSAPI && (this.hasGeckoPartialSupport || this.hasAndroidOSSupport)) {
 				videoElement.autoplay = true;
 			} else {
 				videoElement.style.display = 'none';
@@ -56,6 +70,15 @@ class PipRenderer {
 			this.isOpen = false;
 			this._closeListeners.forEach((f) => f());
 		});
+		if (this.hasAndroidOSSupport) {
+			videoElement.addEventListener('fullscreenchange', () => {
+				if (!document.fullscreenElement) {
+					this.pipWindow = null;
+					this.isOpen = false;
+					this._closeListeners.forEach((f) => f());
+				}
+			});
+		}
 		this.videoElement = videoElement;
 
 		if (settings.startOpen) {
@@ -107,7 +130,7 @@ class PipRenderer {
 
 		return {
 			canvas: this.canvasElement,
-			ctx: this.canvasElement.getContext('2d')
+			ctx: this.canvasElement.getContext('2d'),
 		};
 	}
 
@@ -135,6 +158,15 @@ class PipRenderer {
 	public async setPipOpen(setOpen: boolean) {
 		if (setOpen && !document.pictureInPictureElement) {
 			try {
+				if (!this.hasRegularJSAPI && this.hasAndroidOSSupport) {
+					// For Android, we have make video full screen and prompt user to press home button - this will trigger PiP
+					alert(
+						`To trigger PiP, press the "home" button on your Android device after the video fullscreens!`
+					);
+					await this.videoElement.requestFullscreen();
+					this.isOpen = true;
+				}
+				// @ts-ignore
 				this.pipWindow = await this.videoElement.requestPictureInPicture();
 				this.isOpen = true;
 			} catch (err) {
@@ -175,7 +207,7 @@ class PipRenderer {
 
 		const result = await html2canvas(element, {
 			canvas: this.canvasElement,
-			removeContainer: true
+			removeContainer: true,
 		});
 		this.streamCanvas(result);
 	}
@@ -228,8 +260,8 @@ class PipRenderer {
 		console.log(`Starting canvas streaming`, {
 			canvasDimensions: {
 				width: this.canvasElement.width,
-				height: this.canvasElement.height
-			}
+				height: this.canvasElement.height,
+			},
 		});
 		this.videoElement.width = this.canvasElement.width;
 		this.videoElement.height = this.canvasElement.height;
