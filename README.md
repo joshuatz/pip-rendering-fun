@@ -90,6 +90,8 @@ In fact, [the *explainer* for the new functionality](https://github.com/w3c/pict
 	- Picture-in-Picture Repo: [Main v2 Issue (#113)](https://github.com/w3c/picture-in-picture/issues/113)
 </details>
 
+Recently (late 2022, early 2023), Chrome has started advancing a separate API specifically for non-video content, called [the ***Document*** *Picture-in-Picture* API](https://developer.chrome.com/docs/web-platform/document-picture-in-picture/). This is being developed within the *WICG* (*Web Incubator Community Group*), a community group under W3C. There is [a proposal / specification being worked on](https://github.com/WICG/document-picture-in-picture), and in early 2023, it [was announced that an origin trial for the API would be started with Chrome 111](https://groups.google.com/a/chromium.org/g/blink-dev/c/Tz1gUh92dXs).
+
 ### Multi-Screen Window Placement
 It's slightly confusing how this feature exists in the landscape of Browser Vendors, W3C, community groups, and specifications, but it is promising all the same.
 
