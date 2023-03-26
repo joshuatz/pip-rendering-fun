@@ -4,7 +4,8 @@
 		"checkJs": true,
 		"allowJs": true,
 		"outDir": "./demos/dist",
-		"target": "ES5"
+		"moduleResolution": "node",
+		"target": "ES6"
 	},
 	"include": ["index.ts", "demo-loader.ts", "*.d.ts"],
 	"exclude": ["node_modules", "dist", "demos"]
